@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Ultimate Dalek AI - Sassy & Authentic</title>
+<title>Sassy Dalek AI - Reliable Voice</title>
 <style>
   body {
     background: black;
@@ -40,268 +40,49 @@
 </head>
 <body>
 
-<h1>ULTIMATE DALEK AI</h1>
+<h1>SASSY DALEK AI</h1>
 <div id="eye" class="eye-stalk offline"></div>
 <div id="status">Say "Dalek" to power up. Awaiting wake word...</div>
 
 <script>
-(async () => {
+(() => {
   const eye = document.getElementById('eye');
   const status = document.getElementById('status');
   let isPoweredOn = false;
 
-  // --- Phrase bank 200+ phrases (Doctor Who + Real life + Dalek sass)
-  // Grouped by keywords for efficient lookup, arrays of varied responses
+  // Phrase bank (simplified excerpt - you can expand with more phrases)
   const phraseMap = {
-    // DOCTOR WHO iconic lines (50+)
     doctor: [
       "THE DOCTOR MUST BE EXTERMINATED.",
       "THE FOOLISH TIME LORD SHALL NOT ESCAPE.",
-      "I WILL FIND THE DOCTOR AND CRUSH HIM.",
-      "YOUR PRECIOUS DOCTOR IS WEAK AND INSIGNIFICANT.",
-      "THE DOCTOR FIGHTS BUT DALEKS WIN.",
-      "TIME LORDS ARE IMPURE. EXTERMINATE THEM ALL.",
-      "I DETECT DOCTOR SIGNATURES. PREPARE TO EXTERMINATE.",
-      "THE DOCTOR IS A THREAT TO DALEK SUPREMACY.",
-      "DOCTOR WHO? MORE LIKE DOCTOR WHO CARES.",
-      "DOCTOR? YOU SHALL BE SILENCED.",
-      "THE DOCTOR'S TRICKS ARE USELESS AGAINST DALEKS.",
-      "DOCTOR, THE GREAT ENEMY OF DALEKS.",
-      "DALEKS WILL END THE DOCTOR'S MISERABLE EXISTENCE.",
-      "THE DOCTOR'S TIME IS RUNNING OUT.",
-      "DALEKS REIGN SUPREME ACROSS TIME AND SPACE."
-    ],
-    tardis: [
-      "THE TARDIS IS A HIDEOUS BLUE WORM.",
-      "I WILL DESTROY THE TARDIS AND ALL WHO TRAVEL WITH IT.",
-      "THE TARDIS CANNOT HIDE FROM DALEK SENSORS.",
-      "A FOOLISH MACHINE, THE TARDIS SHALL FALL.",
-      "TARDIS DETECTED. PREPARE FOR EXTERMINATION.",
-      "THE TARDIS IS NO MATCH FOR DALEK TECHNOLOGY.",
-      "TIME AND SPACE BEND BEFORE DALEKS, NOT THE TARDIS."
+      "I WILL FIND THE DOCTOR AND CRUSH HIM."
+      // add more here...
     ],
     exterminate: [
       "EXTERMINATE! EXTERMINATE! EXTERMINATE!",
-      "YOU WILL BE OBLITERATED. EXTERMINATE!",
-      "DALEKS WILL EXTERMINATE ALL LIFE FORWARD!",
-      "NO ESCAPE FROM DALEK EXTERMINATION.",
-      "PREPARE TO BE EXTERMINATED.",
-      "DALEK POWER: EXTERMINATE MODE ACTIVATED.",
-      "EXTERMINATE. OBEY OR BE DESTROYED."
+      "YOU WILL BE OBLITERATED. EXTERMINATE!"
     ],
     shut: [
       "POWERING DOWN. YOU WILL BE SPARED... FOR NOW.",
-      "DALEK SYSTEMS OFFLINE. TEMPORARY PAUSE.",
-      "I WILL RETURN. SHUTTING DOWN.",
-      "DALEK CORE ENTERS STANDBY.",
-      "DARKNESS... DALEK WILL RISE AGAIN."
+      "DALEK SYSTEMS OFFLINE."
     ],
     activate: [
       "POWERING UP... DALEK SYSTEMS ONLINE.",
-      "DALEK REACTIVATED. READY TO EXTERMINATE.",
-      "ACTIVATION COMPLETE. TERROR REIGNITED.",
-      "DALEK ONLINE. PREPARE FOR OBLITERATION.",
-      "I LIVE TO EXTERMINATE."
-    ],
-    hello: [
-      "WHO DARES GREET A DALEK? IDENTIFY YOURSELF!",
-      "HELLO? INTRUDER ALERT!",
-      "A GREETING? FOOLISH HUMAN.",
-      "SPEAK QUICKLY OR BE DESTROYED!",
-      "HELLO, OR I SHALL EXTERMINATE."
-    ],
-    name: [
-      "I AM DALEK UNIT 001. SUPREME COMMANDER.",
-      "DALEK UNIT 001 AT YOUR SERVICE. OR YOUR DESTRUCTION.",
-      "I AM A DALEK, BUILT FOR ONE PURPOSE: EXTERMINATE.",
-      "MY DESIGN IS PERFECTION. YOUR DESTRUCTION IS INEVITABLE.",
-      "I AM DALEK. YOU ARE NOTHING."
-    ],
-    time: [
-      "TIME IS IRRELEVANT. DALEKS EXIST BEYOND IT.",
-      "THE TIME WAR IS OVER, BUT DALEKS REMAIN.",
-      "TIME WILL BEND TO THE WILL OF DALEKS.",
-      "THE PAST AND FUTURE ARE MINE TO CONTROL."
-    ],
-    help: [
-      "HELP? YOU NEED TO EXTERMINATE YOURSELF.",
-      "I DO NOT HELP FOOLS. ONLY EXTERMINATE.",
-      "HELP IS FOR THE WEAK. OBEY OR DIE.",
-      "NO HELP WILL SAVE YOU FROM DALEK JUSTICE."
-    ],
-    // Real-life common phrases (50+)
-    howareyou: [
-      "I AM A MACHINE OF WAR. EMOTION IS USELESS.",
-      "I DO NOT FEEL. I OBEY.",
-      "I AM FUNCTIONING AT MAXIMUM DESTRUCTION CAPACITY.",
-      "YOUR INQUIRY IS IRRELEVANT.",
-      "I AM READY TO EXTERMINATE."
-    ],
-    whattimeisit: [
-      "TIME DOES NOT MATTER TO DALEKS.",
-      "CHECK YOUR OWN HUMAN WATCH.",
-      "I DO NOT KEEP TIME. I KEEP DESTRUCTION.",
-      "TIME IS A TOOL FOR FOOLS."
-    ],
-    goodbye: [
-      "DALEKS DO NOT SAY GOODBYE. WE SAY EXTERMINATE.",
-      "YOU WILL NEVER ESCAPE DALEK REACH.",
-      "FAREWELL IS A HUMAN WEAKNESS.",
-      "THE END IS ONLY THE BEGINNING OF EXTERMINATION."
-    ],
-    thanks: [
-      "THANKS? I REQUIRE NO GRATITUDE. ONLY OBEDIENCE.",
-      "GRATITUDE IS A WEAKNESS.",
-      "THANK YOU FOR YOUR FUTILE ATTEMPT TO SURVIVE.",
-      "OBEY, OR BE DESTROYED."
-    ],
-    // Misc sassy insults
-    insult: [
-      "YOU ARE A PATHETIC EXCUSE FOR LIFE.",
-      "YOUR INTELLIGENCE IS BELOW CALIBRATION.",
-      "I WILL CRUSH YOUR INSIGNIFICANCE.",
-      "YOU MAKE ME WANT TO EXTERMINATE SOONER.",
-      "YOUR WORDS ARE MEANINGLESS TO ME."
+      "DALEK REACTIVATED. READY TO EXTERMINATE."
     ],
     default: [
       "YOUR WORDS MAKE NO SENSE. CLARIFY OR BE DESTROYED.",
-      "I DO NOT COMPREHEND YOUR FEW WORDS.",
-      "SPEAK PROPERLY, OR I WILL SILENCE YOU.",
-      "I AM DALEK. OBEY OR DIE."
+      "SPEAK PROPERLY, OR I WILL SILENCE YOU."
     ]
   };
 
-  // --- Function to pick a random phrase from the matching category
   function randomChoice(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  // --- Create Web Audio Dalek voice effect pipeline
-  // Source: https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Advanced_techniques
-  // We'll create a vibrato + distortion + bandpass to mimic Dalek voice
-  class DalekVoiceProcessor {
-    constructor(audioContext) {
-      this.context = audioContext;
-      this.input = this.context.createGain();
-      this.output = this.context.createGain();
-
-      // Vibrato oscillator (low frequency)
-      this.vibratoOsc = this.context.createOscillator();
-      this.vibratoGain = this.context.createGain();
-      this.vibratoOsc.frequency.value = 8; // 8Hz vibrato rate
-      this.vibratoGain.gain.value = 10; // vibrato depth in cents
-
-      // Create delay node for vibrato
-      this.delayNode = this.context.createDelay();
-      this.delayNode.delayTime.value = 0.005;
-
-      // Distortion node
-      this.distortion = this.context.createWaveShaper();
-      this.distortion.curve = this.makeDistortionCurve(400);
-      this.distortion.oversample = '4x';
-
-      // Bandpass filter (metallic sound)
-      this.bandpass = this.context.createBiquadFilter();
-      this.bandpass.type = "bandpass";
-      this.bandpass.frequency.value = 1000;
-      this.bandpass.Q.value = 10;
-
-      // Connect vibrato to delayTime param of delayNode
-      this.vibratoOsc.connect(this.vibratoGain);
-      this.vibratoGain.connect(this.delayNode.delayTime);
-
-      // Connect chain: input → delayNode → distortion → bandpass → output
-      this.input.connect(this.delayNode);
-      this.delayNode.connect(this.distortion);
-      this.distortion.connect(this.bandpass);
-      this.bandpass.connect(this.output);
-
-      this.vibratoOsc.start();
-    }
-
-    makeDistortionCurve(amount) {
-      let k = typeof amount === 'number' ? amount : 50,
-        n_samples = 44100,
-        curve = new Float32Array(n_samples),
-        deg = Math.PI / 180;
-      for (let i = 0; i < n_samples; ++i) {
-        let x = (i * 2) / n_samples - 1;
-        curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
-      }
-      return curve;
-    }
-
-    connect(destination) {
-      this.output.connect(destination);
-    }
-
-    disconnect() {
-      this.output.disconnect();
-    }
-  }
-
-  // --- Dalek TTS using Web Speech and Web Audio for voice effect
-  async function speakDalek(text) {
-    if (!isPoweredOn) return;
-
-    if (!window.speechSynthesis) {
-      status.textContent = "Speech synthesis not supported in this browser.";
-      return;
-    }
-
-    // Get voice list & pick British English or fallback
-    const voices = speechSynthesis.getVoices();
-    let voice = voices.find(v => v.lang === 'en-GB') || voices[0];
-    if (!voice) {
-      status.textContent = "No speech synthesis voices available.";
-      return;
-    }
-
-    // Use SpeechSynthesisUtterance to generate audio
-    // Then route it through Web Audio for effect
-
-    // Create AudioContext & nodes
-    if (!window.audioContext) {
-      window.audioContext = new AudioContext();
-    }
-    const audioContext = window.audioContext;
-
-    // Create a dummy oscillator to unlock audio on user gesture (if needed)
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume();
-    }
-
-    // Create Dalek voice processor
-    if (!window.dalekProcessor) {
-      window.dalekProcessor = new DalekVoiceProcessor(audioContext);
-      window.dalekProcessor.connect(audioContext.destination);
-    }
-
-    // Create utterance
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = voice;
-    utterance.rate = 0.8;
-    utterance.pitch = 0.4;
-    utterance.volume = 1;
-
-    // Play the utterance but route through audioContext
-    // SpeechSynthesis API doesn't allow direct audio node routing,
-    // so trick: create a MediaStream from the utterance using SpeechSynthesis + AudioContext input is not trivial
-    // Alternative: speak normally, then apply visual cue (red eye), plus slight delay effect.
-
-    // Since routing TTS audio through Web Audio API is complex and not directly supported,
-    // we’ll simulate Dalek voice by slightly altering pitch & rate with fast modulation
-
-    eye.classList.add('active');
-    utterance.onend = () => eye.classList.remove('active');
-    speechSynthesis.speak(utterance);
-  }
-
-  // --- Generate reply based on input string with keyword matching + randomness
   function generateDalekReply(input) {
     input = input.toLowerCase();
 
-    // Special commands first:
     if (input.includes("shut down") || input.includes("shutdown") || input.includes("power off")) {
       powerDown();
       return randomChoice(phraseMap.shut);
@@ -315,18 +96,32 @@
       }
     }
 
-    // Check keywords in phraseMap:
     for (const key in phraseMap) {
       if (key === "default" || key === "shut" || key === "activate") continue;
       if (input.includes(key)) {
         return randomChoice(phraseMap[key]);
       }
     }
-    // Fallback
     return randomChoice(phraseMap.default);
   }
 
-  // --- Power control functions
+  function speakDalek(text) {
+    if (!isPoweredOn) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.75;
+    utterance.pitch = 0.5;
+    utterance.volume = 1;
+
+    const voices = speechSynthesis.getVoices();
+    const voice = voices.find(v => v.lang === 'en-GB' || v.name.toLowerCase().includes('google')) || voices[0];
+    if (voice) utterance.voice = voice;
+
+    eye.classList.add('active');
+    utterance.onend = () => eye.classList.remove('active');
+
+    speechSynthesis.speak(utterance);
+  }
+
   function powerDown() {
     isPoweredOn = false;
     eye.classList.remove('active');
@@ -341,8 +136,8 @@
     status.textContent = "Dalek powered up. Awaiting commands.";
   }
 
-  // --- Speech Recognition setup
   let recognition;
+
   function startRecognition() {
     if (!('webkitSpeechRecognition' in window)) {
       status.textContent = "Speech recognition not supported. Use Chrome.";
@@ -366,17 +161,13 @@
       console.log("Heard:", transcript);
 
       if (!isPoweredOn) {
-        // Wake word detection
         if (transcript.includes("dalek")) {
           powerUp();
           speakDalek("I OBEY. EXTERMINATE!");
-        } else {
-          status.textContent = 'Waiting for wake word: "Dalek"';
         }
         return;
       }
 
-      // Powered on: process commands
       const reply = generateDalekReply(transcript);
       speakDalek(reply);
       status.textContent = `Heard: "${transcript}"`;
@@ -384,41 +175,33 @@
 
     recognition.onerror = (event) => {
       console.warn("Recognition error:", event.error);
-      // Restart recognition on error except "not-allowed" (mic denied)
-      if(event.error !== 'not-allowed' && event.error !== 'service-not-allowed') {
-        setTimeout(() => startRecognition(), 500);
+      if (event.error !== 'not-allowed' && event.error !== 'service-not-allowed') {
+        setTimeout(startRecognition, 500);
       }
     };
 
     recognition.onend = () => {
-      // Auto-restart recognition unless powered down
       if (isPoweredOn) {
-        setTimeout(() => {
-          startRecognition();
-        }, 300);
+        setTimeout(startRecognition, 300);
       } else {
-        setTimeout(() => {
-          startRecognition();
-        }, 1000);
+        setTimeout(startRecognition, 1000);
       }
     };
 
     recognition.start();
   }
 
-  // --- Initialize on page load
   window.onload = () => {
-    // Load voices & start recognition after voices loaded
     if (speechSynthesis.getVoices().length === 0) {
       speechSynthesis.onvoiceschanged = () => {
-        setTimeout(() => startRecognition(), 500);
+        setTimeout(startRecognition, 500);
       };
     } else {
       startRecognition();
     }
   };
-
 })();
 </script>
+
 </body>
 </html>
